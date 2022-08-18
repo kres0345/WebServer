@@ -17,6 +17,7 @@ public class WebServer {
         handler = requestHandler;
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void start(int port) throws IOException {
         ServerSocket listener = new ServerSocket(port);
 

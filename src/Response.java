@@ -1,3 +1,4 @@
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +24,7 @@ public class Response extends GeneralHeader {
     }
 
     public byte[] toBytes(){
-        return toString().getBytes(StandardCharsets.UTF_8);
+        ByteBuffer byteBuffer = StandardCharsets.UTF_8.encode(toString());
+        return byteBuffer.array();
     }
 }
