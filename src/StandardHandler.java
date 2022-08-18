@@ -1,9 +1,9 @@
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class StandardHandler extends Handler {
+public class StandardHandler implements Handler {
     @Override
-    public Optional<Response> HandleRequest(Request req) {
+    public Optional<Response> handleRequest(Request req) {
         switch (req.method){
             case "get":
                 Response res = new Response();
