@@ -1,14 +1,11 @@
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 @SuppressWarnings("InfiniteLoopStatement")
 public class Main {
@@ -65,13 +62,13 @@ public class Main {
 
             Request request = new Request(requestString, client.getInetAddress());
             if (request.contentLength > 0){
-                byte[] requestbody = new byte[request.contentLength];
-                stream.read(requestbody, 0, request.contentLength);
+                byte[] body = new byte[request.contentLength];
+                stream.read(body, 0, request.contentLength);
 
-                request.body = requestbody;
+                request.body = body;
             }
 
-            System.out.println("Recieved request from " + request.originator + "\n -- " + request.requestUri);
+            System.out.println("Received request from " + request.originator + "\n -- " + request.requestUri);
         }
 
     }
