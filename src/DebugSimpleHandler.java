@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class StandardHandler implements Handler {
+public class DebugSimpleHandler implements Handler {
     @Override
     public Optional<Response> handleRequest(Request req) {
         switch (req.method){
@@ -12,7 +12,7 @@ public class StandardHandler implements Handler {
                 res.date = LocalDateTime.now();
                 res.connectionStatus = req.connectionStatus;
                 res.contentType = "text/html";
-                res.content = "<span>Hello world from Java</span>";
+                res.content = "<span>Hello world fra Java</span>";
 
                 return Optional.of(res);
             case "put":

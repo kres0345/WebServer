@@ -3,11 +3,13 @@ import java.net.InetAddress;
 import java.net.URI;
 
 public class Request extends GeneralHeader {
+    public static final Byte[] TERMINATOR = new Byte[] { 13, 10, 13, 10 };
     public String method;
     public URI requestUri;
     public String userAgent;
     public String host;
     public InetAddress originator;
+    public int contentLength;
 
     public Request(String raw, InetAddress origin){
         connectionStatus = "close"; // closes request by default.
