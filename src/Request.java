@@ -1,8 +1,7 @@
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.URI;
 
-public class Request extends GeneralHeader {
+public class Request extends HTTPMessage {
     public static final Byte[] TERMINATOR = new Byte[] { 13, 10, 13, 10 };
     public String method;
     public URI requestUri;

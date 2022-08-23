@@ -7,22 +7,22 @@ public class DebugSimpleHandler implements Handler {
     public Optional<Response> handleRequest(Request req) {
         switch (req.method){
             case "get":
-                Response res = new Response();
-                res.date = LocalDateTime.now();
-                res.connectionStatus = req.connectionStatus;
-                res.contentType = "text/html; charset=UTF-8";
+                final String contentType = "text/html; charset=UTF-8";
 
                 if (Objects.equals(req.requestUri.toString(), "/")){
-                    res.statusCode = 420;
-                    res.statusResponse = "Enhance your calm";
-                    res.content = "<!DOCTYPE html><span>'Hello world' fra det sprog der ikke må benævnes.</span>";
-                }else{
-                    res.statusCode = 404;
-                    res.statusResponse = "Not found";
-                    res.content = "<!DOCTYPE html><title>404</title><span>Siden blev ikke fundet.</span>";
+                    return Optional.of(new Response(req,
+                            420,
+                            "Enhance your calm",
+                            contentType,
+                            "<!DOCTYPE html><span>'Hello world' fra det sprog der ikke må benævnes.</span>"));
                 }
 
-                return Optional.of(res);
+                // 404
+                return Optional.of(new Response(req,
+                            404,
+                            "Not found",
+                            contentType,
+                            "<!DOCTYPE html><title>404</title><span>Siden blev ikke fundet.</span>"));
             case "put":
                 break;
         }

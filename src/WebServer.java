@@ -26,7 +26,7 @@ public class WebServer {
                 Socket client = listener.accept();
                 clientConnected(client);
             }catch (Throwable ex){
-                System.err.println("Exception receiving client connection: " + ex.getMessage());
+                ex.printStackTrace();
             }
         }
     }

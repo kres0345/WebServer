@@ -1,14 +1,25 @@
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class Response extends GeneralHeader {
+public class Response extends HTTPMessage {
     public int statusCode;
     public String statusResponse;
     public String contentType;
     public String content;
+
+    public Response(){}
+
+    public Response(Request req, int statusCode, String statusResponse, String contentType, String content){
+        this.statusCode = statusCode;
+        this.statusResponse = statusResponse;
+        this.contentType = contentType;
+        this.content = content;
+        super.date = LocalDateTime.now();
+        connectionStatus = req.connectionStatus;
+    }
 
     @Override
     public String toString() {
