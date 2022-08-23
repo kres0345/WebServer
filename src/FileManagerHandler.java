@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
 
 public class FileManagerHandler implements Handler {
@@ -64,6 +65,23 @@ public class FileManagerHandler implements Handler {
 
     private Response GenerateDirectoryListing(File directory, Request req){
         // TODO: Presents the current directory in a list as html.
-        return null;
+        StringBuffer sb = new StringBuffer();
+        sb.append("<html>");
+        sb.append("<body>");
+        sb.append("<ul>");
+        for (String pathname: Objects.requireNonNull(directory.list())) {
+            sb.append("<li>");
+            sb.append(pathname);
+            sb.append("</li>");
+        }
+        sb.append("</ul>");
+        sb.append("</body>");
+        sb.append("</html>");
+
+        return new Response(req,
+                200,
+                "OK",
+                "text/html",
+                sb.toString());
     }
 }
