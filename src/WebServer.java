@@ -1,7 +1,4 @@
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -35,16 +32,24 @@ public class WebServer {
         System.out.println("Client connected");
         DataInputStream streamReader = new DataInputStream(new BufferedInputStream(client.getInputStream()));
         DataOutputStream streamWriter = new DataOutputStream(client.getOutputStream());
-        List<Byte> data = new ArrayList<>();
 
         while(!client.isClosed() && client.isConnected()){
-
-            int endCharsIndex = 0;
+            boolean disconnected = false;
 
             // retrieve all data until termination sequence is received.
+            int endCharsIndex = 0;
+            List<Byte> receivedData = new ArrayList<>();
             do {
-                byte newByte = streamReader.readByte();
-                data.add(newByte);
+                byte newByte;
+                try{
+                    newByte = streamReader.readByte();
+                }catch (EOFException ex){
+                    break;
+                }catch (IOException ex){
+                    disconnected = true;
+                    break;
+                }
+                receivedData.add(newByte);
 
                 if (newByte == Request.TERMINATOR[endCharsIndex]) {
                     endCharsIndex++;
@@ -54,15 +59,17 @@ public class WebServer {
 
             } while (endCharsIndex != 4);
 
-            byte[] dataArray = new byte[data.size()];
-            for (int i = 0; i < data.size(); i++) {
-                dataArray[i] = data.get(i);
+            // Get header string and display to console.
+            byte[] dataArray = new byte[receivedData.size()];
+            for (int i = 0; i < receivedData.size(); i++) {
+                dataArray[i] = receivedData.get(i);
             }
 
-            String requestString = new String(dataArray, StandardCharsets.UTF_8);
-            System.out.println(requestString);
+            String requestHeader = new String(dataArray, StandardCharsets.UTF_8);
+            System.out.println(requestHeader);
 
-            Request request = new Request(requestString, client.getInetAddress());
+            // Interpret request, and retrieve request content.
+            Request request = new Request(requestHeader, client.getInetAddress());
             if (request.contentLength > 0){
                 byte[] body = new byte[request.contentLength];
                 streamReader.read(body, 0, request.contentLength);
@@ -74,10 +81,18 @@ public class WebServer {
 
             // No response
             Optional<Response> response = handler.handleRequest(request);
+
+            // No response to send.
             if (response.isEmpty()){
                 continue;
             }
 
+            // Don't send response, if disconnected.
+            if (disconnected){
+                break;
+            }
+
+            // Transmit response message
             try{
                 byte[] responseBytes = response.get().toBytes();
                 streamWriter.write(responseBytes, 0, responseBytes.length);

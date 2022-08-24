@@ -39,7 +39,7 @@ public class FileManagerHandler implements Handler {
         File queriedFile = new File(filePath.toAbsolutePath().toUri().getPath());
 
         if (queriedFile.isDirectory()){
-            return GenerateDirectoryListing(queriedFile, req);
+            return GenerateDirectoryListing(filePath, queriedFile, req);
         }else if (queriedFile.exists()){
             return GenerateFileResponse(filePath, req);
         }
@@ -63,7 +63,7 @@ public class FileManagerHandler implements Handler {
                 fileContent);
     }
 
-    private Response GenerateDirectoryListing(File directory, Request req){
+    private Response GenerateDirectoryListing(Path filePath, File directory, Request req){
         // TODO: Presents the current directory in a list as html.
         StringBuffer sb = new StringBuffer();
         sb.append("<html>");
@@ -71,7 +71,11 @@ public class FileManagerHandler implements Handler {
         sb.append("<ul>");
         for (String pathname: Objects.requireNonNull(directory.list())) {
             sb.append("<li>");
+            sb.append("<a href='");
+            sb.append(filePath).append('/').append(pathname);
+            sb.append("'>");
             sb.append(pathname);
+            sb.append("</a>");
             sb.append("</li>");
         }
         sb.append("</ul>");
